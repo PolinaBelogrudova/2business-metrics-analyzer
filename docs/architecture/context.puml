@@ -1,0 +1,23 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+title Business Metrics Analyzer — System Context (C4 L1)
+
+Person(director, "Коммерческий директор", "Просматривает KPI и принимает решения")
+Person(analyst, "Аналитик", "Формирует отчёты и проводит анализ")
+Person(manager, "Менеджер по продажам", "Загружает данные о продажах")
+Person(admin, "Администратор", "Управляет пользователями и метриками")
+
+System(bma, "Business Metrics Analyzer", "Автоматизирует расчёт KPI и визуализацию данных")
+
+System_Ext(crm, "CRM / 1С", "Источник данных о продажах (API/выгрузка)")
+System_Ext(email, "SMTP Сервис", "Отправка email-уведомлений (US-07)")
+
+Rel(director, bma, "Просматривает дашборд (US-01)", "HTTPS")
+Rel(analyst, bma, "Формирует отчёты (US-02), экспортирует (US-04)", "HTTPS")
+Rel(manager, bma, "Загружает данные (US-03)", "HTTPS")
+Rel(admin, bma, "Управляет пользователями (US-05)", "HTTPS")
+
+Rel(bma, crm, "Запрашивает данные о продажах", "REST API / CSV")
+Rel(bma, email, "Отправляет уведомления", "SMTP")
+@enduml

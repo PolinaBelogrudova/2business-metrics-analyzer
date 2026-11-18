@@ -55,3 +55,8 @@ Python 3.10+, FastAPI, SQLAlchemy, PostgreSQL, Redis, Docker, pandas, openpyxl, 
 1. Выделение сервиса отчётов в отдельный микросервис.
 2. Выделение сервиса импорта с очередью (RabbitMQ/Kafka).
 3. Введение API Gateway при появлении внешних потребителей API.
+
+## 10. Ссылки на ADR
+- [ADR-001. Выбор архитектурного стиля](./adr/ADR-001-architecture-style.md)
+- [ADR-002. Паттерны доступа к данным](./adr/ADR-002-data-access.md)
+- [ADR-003. Кэширование KPI в Redis](./adr/ADR-003-kpi-caching.md)

@@ -1,0 +1,45 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+title Business Metrics Analyzer — Containers (C4 L2)
+
+Person(director, "Коммерческий директор")
+Person(analyst, "Аналитик")
+Person(manager, "Менеджер по продажам")
+Person(admin, "Администратор")
+
+System_Boundary(bma, "Business Metrics Analyzer") {
+  Container(web, "Web UI", "HTML/JS (React/Vue)", "Интерфейс: дашборд, отчёты, админка")
+  Container(api, "REST API", "Python, FastAPI", "Маршрутизация запросов, валидация DTO")
+  Container(auth, "Сервис аутентификации", "Python, JWT", "Вход, выдача токенов, проверка ролей (RBAC)")
+  Container(importer, "Сервис импорта", "Python, pandas", "Загрузка и валидация данных из CRM/1С")
+  Container(kpi, "Сервис KPI", "Python", "Расчёт метрик (выручка, средний чек и т.д.)")
+  Container(reports, "Сервис отчётов", "Python, openpyxl", "Генерация Excel-отчётов (US-04)")
+  
+  ContainerDb(db, "База данных", "PostgreSQL", "Хранение данных о продажах, пользователей, метрик")
+  ContainerDb(cache, "Кэш", "Redis", "Кэширование тяжёлых KPI-агрегатов для NFR-01")
+  ContainerDb(storage, "Файловое хранилище", "S3 / MinIO", "Хранение сгенерированных Excel-файлов")
+}
+
+System_Ext(crm, "CRM / 1С", "Источник данных")
+System_Ext(email, "SMTP Сервис", "Уведомления")
+
+Rel(director, web, "Использует", "HTTPS")
+Rel(analyst, web, "Использует", "HTTPS")
+Rel(manager, web, "Использует", "HTTPS")
+Rel(admin, web, "Использует", "HTTPS")
+
+Rel(web, api, "Отправляет запросы", "REST/JSON")
+Rel(api, auth, "Проверяет токен")
+Rel(api, importer, "Запускает импорт")
+Rel(api, kpi, "Запрашивает KPI")
+Rel(api, reports, "Запрашивает отчёт")
+
+Rel(importer, crm, "Забирает данные", "API/CSV")
+Rel(importer, db, "Сохраняет данные", "SQL")
+Rel(kpi, db, "Читает данные", "SQL")
+Rel(kpi, cache, "Кэширует результаты", "Redis")
+Rel(reports, db, "Читает данные", "SQL")
+Rel(reports, storage, "Сохраняет файлы", "S3 API")
+Rel(reports, email, "Отправляет уведомление", "SMTP")
+@enduml
